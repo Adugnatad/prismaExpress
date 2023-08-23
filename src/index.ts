@@ -1,30 +1,12 @@
-import { Prisma, PrismaClient } from "@prisma/client";
 import express from "express";
-
-const prisma = new PrismaClient();
+import * as userController from "../controllers/user";
 const app = express();
 
 app.use(express.json());
 
-app.post("/signup", async (req, res) => {
-  const { username, password, Full_Name, gender, location, website } = req.body;
+app.post("/signup", userController.signup);
 
-  const user = await prisma.user.create({
-    data: {
-      username: username,
-      password: password,
-      profile: {
-        create: {
-          name: Full_Name,
-          gender,
-          location,
-          website,
-        },
-      },
-    },
-  });
-  res.json(user);
-});
+app.post("/login", userController.login);
 
 const server = app.listen(3000, () => {
   console.log(`
