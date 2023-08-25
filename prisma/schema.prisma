@@ -34,3 +34,19 @@ model Profile {
   picture  String?
   profile  User[]
 }
+
+model Product {
+  id                 Int     @id @default(autoincrement())
+  name               String  @unique
+  price              Int
+  available_quantity Int
+  picture            String?
+  order              Order[]
+}
+
+model Order {
+  id           Int     @id @default(autoincrement())
+  product_id   Int
+  product      Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  order_amount Int
+}

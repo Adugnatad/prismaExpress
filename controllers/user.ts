@@ -1,8 +1,18 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, checkHash } from "../config.ts/hash";
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import { secret_key } from "../util/secrets";
 
 const prisma = new PrismaClient();
+
+const generateToken = (username: string) => {
+  const payload = {
+    username: username,
+  };
+  const token = jwt.sign(payload, secret_key, { expiresIn: "1h" });
+  return token;
+};
 
 export const signup = async (req: Request, res: Response) => {
   const { username, password, Full_Name, gender, location, website } = req.body;
@@ -53,7 +63,8 @@ export const login = async (req: Request, res: Response) => {
   if (user) {
     const passwordCheck = checkHash(password, user.password);
     if (passwordCheck) {
-      res.status(200).json({ message: "Login successful" });
+      const token = generateToken(user.username);
+      res.status(200).json({ token });
     } else {
       res.status(401).send("Invalid Credentials");
     }
