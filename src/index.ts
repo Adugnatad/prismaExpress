@@ -22,6 +22,12 @@ app.get("/product/:id", verifyToken, productController.getProductId);
 app.post("/order", verifyToken, orderController.postOrder);
 app.get("/order", verifyToken, orderController.getOrders);
 app.get("/order/:id", verifyToken, orderController.getOrderId);
+app.delete("/order/:id", verifyToken, orderController.deleteOrderId);
+app.put("/order/:id", verifyToken, orderController.updateOrderId);
+
+app.use((req, res) => {
+  res.status(405).send();
+});
 
 const server = app.listen(3000, () => {
   console.log(`

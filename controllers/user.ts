@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash, checkHash } from "../config.ts/hash";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { secret_key } from "../util/secrets";
 
@@ -16,37 +16,52 @@ const generateToken = (username: string) => {
 
 export const signup = async (req: Request, res: Response) => {
   const { username, password, Full_Name, gender, location, website } = req.body;
+
   const hashedPassword = await hash(password);
   if (hashedPassword) {
-    const user = await prisma.user
-      .create({
-        data: {
-          username: username,
-          password: hashedPassword,
-          profile: {
-            create: {
-              name: Full_Name,
-              gender,
-              location,
-              website,
+    const u = await prisma.user.findUnique({
+      where: {
+        username: username,
+      },
+    });
+
+    if (u) {
+      res.status(403).send("Username already exists");
+    } else {
+      const user = await prisma.user
+        .create({
+          data: {
+            username: username,
+            password: hashedPassword,
+            profile: {
+              create: {
+                name: Full_Name,
+                gender,
+                location,
+                website,
+              },
             },
           },
-        },
-      })
-      .then((user) => {
-        res.json({
-          id: user.id,
-          username: user.username,
-          profile: user.profileId,
+        })
+        .then((user) => {
+          res.json({
+            id: user.id,
+            username: user.username,
+            profile: user.profileId,
+          });
+        })
+        .catch((err) => {
+          if (err instanceof Prisma.PrismaClientKnownRequestError) {
+            if (err.code === "P2002") {
+              res.status(403).send("Invalid request. Unique Constraint failed");
+            } else {
+              res.status(403).json(err.message);
+            }
+          } else {
+            res.status(500).send();
+          }
         });
-      })
-      .catch((err) => {
-        if (err instanceof Prisma.PrismaClientKnownRequestError) {
-          res.status(403).json({ message: "Bad Request" });
-        } else {
-          res.status(500).send();
-        }
-      });
+    }
   } else {
     res.status(500).send("password hash failed");
   }

@@ -43,3 +43,30 @@ export const getOrderId = async (req: Request, res: Response) => {
   });
   res.status(200).json(order);
 };
+
+export const deleteOrderId = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const order = await prisma.order.delete({
+    where: {
+      id: parseInt(id),
+    },
+  });
+  res.status(200).json("order deleted");
+};
+
+export const updateOrderId = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { order_amount } = req.body;
+
+  const order = await prisma.order.update({
+    where: {
+      id: parseInt(id),
+    },
+    data: {
+      order_amount,
+    },
+  });
+
+  res.status(200).json("order updated");
+};

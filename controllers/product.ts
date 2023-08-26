@@ -1,10 +1,32 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import { body, check, validationResult } from "express-validator";
 
 const prisma = new PrismaClient();
 
 export const postProduct = async (req: Request, res: Response) => {
   const { name, price, available_quantity, picture } = req.body;
+
+  await check("price", "price must be greater than 0")
+    .isInt({ min: 1 })
+    .run(req);
+
+  const errors = validationResult(req);
+
+  const p = await prisma.product.findUnique({
+    where: {
+      name,
+    },
+  });
+
+  if (p) {
+    return res.status(403).send("product name already exists");
+  }
+
+  if (!errors.isEmpty()) {
+    return res.status(403).send(errors);
+  }
+
   const product = await prisma.product
     .create({
       data: {
