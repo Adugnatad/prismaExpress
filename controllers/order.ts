@@ -47,12 +47,24 @@ export const getOrderId = async (req: Request, res: Response) => {
 export const deleteOrderId = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const order = await prisma.order.delete({
-    where: {
-      id: parseInt(id),
-    },
-  });
-  res.status(200).json("order deleted");
+  await prisma.order
+    .findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    })
+    .then(async (order) => {
+      if (order) {
+        await prisma.order.delete({
+          where: {
+            id: parseInt(id),
+          },
+        });
+        res.status(200).json("order deleted");
+      } else {
+        res.status(403).json({ Error: "No order by that id found" });
+      }
+    });
 };
 
 export const updateOrderId = async (req: Request, res: Response) => {

@@ -52,9 +52,47 @@ export const postProduct = async (req: Request, res: Response) => {
     });
 };
 
+export const postProductGraph = async (
+  name: string,
+  price: number,
+  available_quantity: number,
+  picture: string
+) => {
+  const p = await prisma.product.findUnique({
+    where: {
+      name,
+    },
+  });
+
+  if (p) {
+    return "error";
+  }
+
+  const product = await prisma.product
+    .create({
+      data: {
+        name,
+        price,
+        available_quantity,
+        picture,
+      },
+    })
+    .then((product) => {
+      return product;
+    })
+    .catch((err) => {
+      return "error";
+    });
+};
+
 export const getProducts = async (req: Request, res: Response) => {
   const products = await prisma.product.findMany();
   res.status(200).json(products);
+};
+
+export const getProductsGraph = async () => {
+  const products = await prisma.product.findMany();
+  return products;
 };
 
 export const getProductId = async (req: Request, res: Response) => {
@@ -66,4 +104,27 @@ export const getProductId = async (req: Request, res: Response) => {
     },
   });
   res.status(200).json(product);
+};
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  await prisma.product
+    .findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    })
+    .then(async (product) => {
+      if (product) {
+        await prisma.product.delete({
+          where: {
+            id: parseInt(id),
+          },
+        });
+        res.status(200).send("Product deleted successfully");
+      } else {
+        res.status(403).json({ Error: "No product by that id found" });
+      }
+    });
 };
