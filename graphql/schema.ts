@@ -16,9 +16,9 @@ const ProductType = new GraphQLObjectType({
   description: "This is type for Product model",
   fields: () => ({
     id: { type: GraphQLNonNull(GraphQLInt) },
-    name: { type: GraphQLString },
-    price: { type: GraphQLInt },
-    available_quantity: { type: GraphQLInt },
+    name: { type: GraphQLNonNull(GraphQLString) },
+    price: { type: GraphQLNonNull(GraphQLInt) },
+    available_quantity: { type: GraphQLNonNull(GraphQLInt) },
     picture: { type: GraphQLString },
   }),
 });
@@ -48,14 +48,13 @@ const RootMutationType = new GraphQLObjectType({
         available_quantity: { type: GraphQLNonNull(GraphQLInt) },
         picture: { type: GraphQLString },
       },
-      resolve: (parent, args) => {
-        return productController.postProductGraph(
+      resolve: (parent, args) =>
+        productController.postProductGraph(
           args.name,
           args.price,
           args.available_quantity,
           args.picture
-        );
-      },
+        ),
     },
   }),
 });

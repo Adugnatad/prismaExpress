@@ -65,7 +65,7 @@ export const postProductGraph = async (
   });
 
   if (p) {
-    return "error";
+    throw new Error("Product with the same name already exists.");
   }
 
   const product = await prisma.product
@@ -78,10 +78,11 @@ export const postProductGraph = async (
       },
     })
     .then((product) => {
+      console.log(product);
       return product;
     })
     .catch((err) => {
-      return "error";
+      throw new Error(`Failed to add product: ${err.message}`);
     });
 };
 
