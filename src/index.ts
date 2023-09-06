@@ -3,18 +3,8 @@ import * as userController from "../controllers/user";
 import * as productController from "../controllers/product";
 import * as orderController from "../controllers/order";
 import { verifyToken } from "../config.ts/jwtToken";
-import { graphqlHTTP } from "express-graphql";
-import schema from "../graphql/schema";
 
 const app = express();
-
-app.use(
-  "/graphql",
-  graphqlHTTP({
-    schema: schema,
-    graphiql: true,
-  })
-);
 
 app.use(express.json());
 
