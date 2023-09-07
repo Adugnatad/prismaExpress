@@ -1,19 +1,19 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { typeDefs } from "./schema.ts";
+import { typeDefs } from "./schema";
 import { Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 const resolvers = {
-  Product: {
+  Query: {
     products() {
       return prisma.product.findMany();
     },
     product(_: any, args: any) {
       return prisma.product.findUnique({
         where: {
-          id: args.id,
+          id: parseInt(args.id),
         },
       });
     },
@@ -36,11 +36,8 @@ const server = new ApolloServer({
   resolvers,
 });
 
-const {
-  url,
-} = async () =>
-  await startStandaloneServer(server, {
-    listen: { port: 4000 },
-  });
-
-console.log(`Server ready at: ${url}`);
+startStandaloneServer(server, {
+  listen: { port: 4000 },
+}).then(() => {
+  console.log("Server listening at port 4000");
+});
