@@ -8,6 +8,10 @@ const app = express();
 
 app.use(express.json());
 
+app.get("/vercel", (req, res) => {
+  res.send("vercel api");
+});
+
 app.post("/signup", userController.signup);
 
 app.post("/login", userController.login);
