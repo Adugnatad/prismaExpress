@@ -9,7 +9,7 @@
     "start": "nodemon --exec ts-node ./src/index.ts",
     "graphql": "nodemon --exec ts-node ./graphql/index.ts",
     "build": "tsc",
-    "vercel-build": "echo hello"
+    "vercel-build": "prisma generate"
   },
   "keywords": [],
   "author": "",
