@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { hash, checkHash } from "../config.ts/hash";
+// import { hash, checkHash } from "../config.ts/hash";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { secret_key } from "../util/secrets";
@@ -17,8 +17,9 @@ const generateToken = (username: string) => {
 export const signup = async (req: Request, res: Response) => {
   const { username, password, Full_Name, gender, location, website } = req.body;
 
-  const hashedPassword = await hash(password);
-  if (hashedPassword) {
+  // const hashedPassword = await hash(password);
+  // if (hashedPassword) {
+  if (password) {
     const u = await prisma.user.findUnique({
       where: {
         username: username,
@@ -32,7 +33,7 @@ export const signup = async (req: Request, res: Response) => {
         .create({
           data: {
             username: username,
-            password: hashedPassword,
+            password: password,
             profile: {
               create: {
                 name: Full_Name,
@@ -76,8 +77,9 @@ export const login = async (req: Request, res: Response) => {
     },
   });
   if (user) {
-    const passwordCheck = checkHash(password, user.password);
-    if (passwordCheck) {
+    // const passwordCheck = checkHash(password, user.password);
+    // if (passwordCheck) {
+    if (true) {
       const token = generateToken(user.username);
       res.status(200).json({ token });
     } else {
