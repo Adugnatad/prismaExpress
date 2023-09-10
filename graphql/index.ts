@@ -36,8 +36,10 @@ const server = new ApolloServer({
   resolvers,
 });
 
-startStandaloneServer(server, {
-  listen: { port: 4000 },
-}).then(() => {
-  console.log("Server listening at port 4000");
-});
+export default server;
+
+// startStandaloneServer(server, {
+//   listen: { port: 4000 },
+// }).then(() => {
+//   console.log("Server listening at port 4000");
+// });

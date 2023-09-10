@@ -3,6 +3,8 @@ import * as userController from "../controllers/user";
 import * as productController from "../controllers/product";
 import * as orderController from "../controllers/order";
 import { verifyToken } from "../config.ts/jwtToken";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import server from "../graphql";
 
 const app = express();
 
@@ -38,6 +40,12 @@ app.use((req, res) => {
 app.listen(3000, () => {
   console.log(`
     🚀 Server ready at: http://localhost:3000`);
+});
+
+startStandaloneServer(server, {
+  listen: { port: 4000 },
+}).then(() => {
+  console.log("Server listening at port 4000");
 });
 
 export default app;

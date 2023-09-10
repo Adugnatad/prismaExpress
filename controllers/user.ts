@@ -3,6 +3,7 @@ import { hash, checkHash } from "../config.ts/hash";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { secret_key } from "../util/secrets";
+import { check, validationResult } from "express-validator";
 
 const prisma = new PrismaClient();
 
@@ -16,6 +17,16 @@ const generateToken = (username: string) => {
 
 export const signup = async (req: Request, res: Response) => {
   const { username, password, Full_Name, gender, location, website } = req.body;
+
+  await check("gender", "gender can be either MALE or FEMALE")
+    .isIn(["MALE", "FEMALE"])
+    .run(req);
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(403).send(errors);
+  }
 
   const hashedPassword = await hash(password);
   if (hashedPassword) {
@@ -58,7 +69,7 @@ export const signup = async (req: Request, res: Response) => {
               res.status(403).json(err.message);
             }
           } else {
-            res.status(500).send();
+            res.status(500).send(err);
           }
         });
     }
