@@ -19,17 +19,23 @@ const httpServer = http.createServer(app);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  introspection: true,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
 await server.start();
 
-app.get("/", expressMiddleware(server));
+app.use("/", expressMiddleware(server));
 
 await new Promise<void>((resolve) =>
   httpServer.listen({ port: 4000 }, resolve)
 );
 console.log(`🚀 Server ready at http://localhost:4000/`);
+
+// const { url } = await startStandaloneServer(server, {
+//   listen: { port: 4000 },
+// });
+// console.log(`Server ready at ${url}`);
 
 app.post("/signup", userController.signup);
 
