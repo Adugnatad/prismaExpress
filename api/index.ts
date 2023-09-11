@@ -42,10 +42,11 @@ app.listen(3000, () => {
     🚀 Server ready at: http://localhost:3000`);
 });
 
-startStandaloneServer(server, {
+const graphql = startStandaloneServer(server, {
   listen: { port: 4000 },
 }).then(() => {
   console.log("Server listening at port 4000");
 });
 
-export default app;
+// export default app;
+export default graphql;
