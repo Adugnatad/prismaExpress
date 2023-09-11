@@ -4,15 +4,32 @@ import * as productController from "../controllers/product";
 import * as orderController from "../controllers/order";
 import { verifyToken } from "../config.ts/jwtToken";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import server from "../graphql";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import http from "http";
+import { typeDefs, resolvers } from "../graphql/schema";
+
+import { ApolloServer } from "@apollo/server";
 
 const app = express();
-
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("vercel api");
+const httpServer = http.createServer(app);
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
+
+await server.start();
+
+app.get("/", expressMiddleware(server));
+
+await new Promise<void>((resolve) =>
+  httpServer.listen({ port: 4000 }, resolve)
+);
+console.log(`🚀 Server ready at http://localhost:4000/`);
 
 app.post("/signup", userController.signup);
 
@@ -37,16 +54,9 @@ app.use((req, res) => {
   res.status(405).send();
 });
 
-app.listen(3000, () => {
-  console.log(`
-    🚀 Server ready at: http://localhost:3000`);
-});
+// app.listen(3000, () => {
+//   console.log(`
+//     🚀 Server ready at: http://localhost:3000`);
+// });
 
-const graphql = startStandaloneServer(server, {
-  listen: { port: 4000 },
-}).then(() => {
-  console.log("Server listening at port 4000");
-});
-
-// export default app;
-export default graphql;
+export default app;
