@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { secret_key } from "../util/secrets.ts";
+import { secret_key } from "../util/secrets";
 
 export const verifyToken = (
   req: Request,
