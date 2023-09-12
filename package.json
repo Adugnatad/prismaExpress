@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "seed": "ts-node prisma/seed.ts",
-    "start": "nodemon --exec ts-node-esm  ./api/index.ts",
+    "start": "nodemon --exec node --experimental-specifier-resolution=node --loader ts-node/esm  ./api/index.ts",
     "graphql": "nodemon --exec ts-node ./graphql/index.ts",
     "build": "tsc",
     "vercel-build": "prisma generate"
