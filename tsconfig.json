@@ -3,6 +3,8 @@
       "module": "ESNext",
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
+      "allowImportingTsExtensions": true,
+      "noEmit": true,
       "target": "es2017",
       "noImplicitAny": true,
       "moduleResolution": "node",
@@ -15,10 +17,7 @@
           ]
       }
   },
-  // "ts-node": {
-  //   "esm": true,
-  //   "experimentalSpecifierResolution": "node",
-  // },
+
   "include": [
       "api/**/*"
   ]

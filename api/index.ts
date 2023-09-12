@@ -1,30 +1,30 @@
 import express from "express";
-import * as userController from "../controllers/user";
-import * as productController from "../controllers/product";
-import * as orderController from "../controllers/order";
-import { verifyToken } from "../config.ts/jwtToken";
+import * as userController from "../controllers/user.ts";
+import * as productController from "../controllers/product.ts";
+import * as orderController from "../controllers/order.ts";
+import { verifyToken } from "../config.ts/jwtToken.ts";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import http from "http";
-import { typeDefs, resolvers } from "../graphql/schema";
+import { typeDefs, resolvers } from "../graphql/schema.ts";
 import cors from "cors";
 import { ApolloServer } from "@apollo/server";
 
 const app = express();
 app.use(express.json());
 
-// const httpServer = http.createServer(app);
-// const server = new ApolloServer({
-//   typeDefs,
-//   resolvers,
-//   introspection: true,
-//   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-// });
+const httpServer = http.createServer(app);
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  introspection: true,
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+});
 
-// await server.start();
+await server.start();
 
-// app.use("/graphql", cors<cors.CorsRequest>(), expressMiddleware(server));
+app.use("/graphql", cors<cors.CorsRequest>(), expressMiddleware(server));
 
 // await new Promise<void>((resolve) =>
 //   httpServer.listen({ port: 4000 }, resolve)

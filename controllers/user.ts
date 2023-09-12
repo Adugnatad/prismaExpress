@@ -1,8 +1,8 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { hash, checkHash } from "../config.ts/hash";
+import { hash, checkHash } from "../config.ts/hash.ts";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { secret_key } from "../util/secrets";
+import { secret_key } from "../util/secrets.ts";
 import { check, validationResult } from "express-validator";
 
 const prisma = new PrismaClient();
