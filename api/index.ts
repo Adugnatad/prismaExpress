@@ -8,13 +8,12 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import http from "http";
 import { typeDefs, resolvers } from "../graphql/schema";
-
+import cors from "cors";
 import { ApolloServer } from "@apollo/server";
 
 const app = express();
-app.use(express.json());
-
 const httpServer = http.createServer(app);
+app.use(express.json());
 
 const server = new ApolloServer({
   typeDefs,
@@ -25,12 +24,12 @@ const server = new ApolloServer({
 
 await server.start();
 
-app.use("/", expressMiddleware(server));
+app.use("/graphql", cors<cors.CorsRequest>(), expressMiddleware(server));
 
-await new Promise<void>((resolve) =>
-  httpServer.listen({ port: 4000 }, resolve)
-);
-console.log(`🚀 Server ready at http://localhost:4000/`);
+// await new Promise<void>((resolve) =>
+//   httpServer.listen({ port: 4000 }, resolve)
+// );
+// console.log(`🚀 Server ready at http://localhost:4000/`);
 
 // const { url } = await startStandaloneServer(server, {
 //   listen: { port: 4000 },
@@ -60,9 +59,9 @@ app.use((req, res) => {
   res.status(405).send();
 });
 
-// app.listen(3000, () => {
-//   console.log(`
-//     🚀 Server ready at: http://localhost:3000`);
-// });
+app.listen(3000, () => {
+  console.log(`
+    🚀 Server ready at: http://localhost:3000`);
+});
 
 export default app;
