@@ -12,19 +12,19 @@ import cors from "cors";
 import { ApolloServer } from "@apollo/server";
 
 const app = express();
-const httpServer = http.createServer(app);
 app.use(express.json());
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  introspection: true,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-});
+// const httpServer = http.createServer(app);
+// const server = new ApolloServer({
+//   typeDefs,
+//   resolvers,
+//   introspection: true,
+//   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+// });
 
-await server.start();
+// await server.start();
 
-app.use("/graphql", cors<cors.CorsRequest>(), expressMiddleware(server));
+// app.use("/graphql", cors<cors.CorsRequest>(), expressMiddleware(server));
 
 // await new Promise<void>((resolve) =>
 //   httpServer.listen({ port: 4000 }, resolve)
