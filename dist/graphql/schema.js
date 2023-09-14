@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolvers = exports.typeDefs = void 0;
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
-exports.typeDefs = `#graphql
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+export const typeDefs = `#graphql
   type Query {
     products: [Product]
     product(id: ID!): Product
@@ -33,7 +30,7 @@ exports.typeDefs = `#graphql
   }
 
 `;
-exports.resolvers = {
+export const resolvers = {
     Query: {
         products() {
             return prisma.product.findMany();

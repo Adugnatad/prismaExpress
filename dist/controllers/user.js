@@ -1,32 +1,26 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.signup = void 0;
-const client_1 = require("@prisma/client");
-const hash_1 = require("../config.ts/hash");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const secrets_1 = require("../util/secrets");
-const express_validator_1 = require("express-validator");
-const prisma = new client_1.PrismaClient();
+import { Prisma, PrismaClient } from "@prisma/client";
+import { hash, checkHash } from "../config.ts/hash";
+import jwt from "jsonwebtoken";
+import { secret_key } from "../util/secrets";
+import { check, validationResult } from "express-validator";
+const prisma = new PrismaClient();
 const generateToken = (username) => {
     const payload = {
         username: username,
     };
-    const token = jsonwebtoken_1.default.sign(payload, secrets_1.secret_key, { expiresIn: "1h" });
+    const token = jwt.sign(payload, secret_key, { expiresIn: "1h" });
     return token;
 };
-const signup = async (req, res) => {
+export const signup = async (req, res) => {
     const { username, password, Full_Name, gender, location, website } = req.body;
-    await (0, express_validator_1.check)("gender", "gender can be either MALE or FEMALE")
+    await check("gender", "gender can be either MALE or FEMALE")
         .isIn(["MALE", "FEMALE"])
         .run(req);
-    const errors = (0, express_validator_1.validationResult)(req);
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(403).send(errors);
     }
-    const hashedPassword = await (0, hash_1.hash)(password);
+    const hashedPassword = await hash(password);
     if (hashedPassword) {
         const u = await prisma.user.findUnique({
             where: {
@@ -60,7 +54,7 @@ const signup = async (req, res) => {
                 });
             })
                 .catch((err) => {
-                if (err instanceof client_1.Prisma.PrismaClientKnownRequestError) {
+                if (err instanceof Prisma.PrismaClientKnownRequestError) {
                     if (err.code === "P2002") {
                         res.status(403).send("Invalid request. Unique Constraint failed");
                     }
@@ -78,8 +72,7 @@ const signup = async (req, res) => {
         res.status(500).send("password hash failed");
     }
 };
-exports.signup = signup;
-const login = async (req, res) => {
+export const login = async (req, res) => {
     const { username, password } = req.body;
     const user = await prisma.user.findUnique({
         where: {
@@ -87,7 +80,7 @@ const login = async (req, res) => {
         },
     });
     if (user) {
-        const passwordCheck = (0, hash_1.checkHash)(password, user.password);
+        const passwordCheck = checkHash(password, user.password);
         if (passwordCheck) {
             const token = generateToken(user.username);
             res.status(200).json({ token });
@@ -100,5 +93,4 @@ const login = async (req, res) => {
         res.status(400).send("user not found!");
     }
 };
-exports.login = login;
 //# sourceMappingURL=user.js.map
