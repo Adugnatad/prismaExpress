@@ -8,7 +8,7 @@
     "seed": "ts-node prisma/seed.ts",
     "start": "nodemon --exec ts-node ./api/index.ts",
     "graphql": "nodemon --exec ts-node ./graphql/index.ts",
-    "build": "echo hello",
+    "build": "tsc",
     "vercel-build": "prisma generate"
   },
   "keywords": [],
