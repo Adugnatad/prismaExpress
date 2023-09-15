@@ -26,6 +26,10 @@ await server.start();
 app.use("/graphql", cors<cors.CorsRequest>(), expressMiddleware(server));
 console.log("apollo server started");
 
+app.get("/", (req, res) => {
+  res.send("api live");
+});
+
 app.post("/signup", userController.signup);
 
 app.post("/login", userController.login);
