@@ -1,3 +1,4 @@
 {
-    "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
+    "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
+    "devCommand": "node --experimental-specifier-resolution=node ./dist/api/index.js"
 }
