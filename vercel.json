@@ -1,4 +1,3 @@
 {
-    "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
-    "devCommand": "npm run start"
+    "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
 }
