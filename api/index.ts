@@ -53,9 +53,9 @@ app.use((req, res) => {
   res.status(405).send();
 });
 
-app.listen(3000, () => {
+app.listen(4000, () => {
   console.log(`
-    🚀 Server ready at: http://localhost:3000`);
+    🚀 Server ready at: http://localhost:4000`);
 });
 
 export default app;
