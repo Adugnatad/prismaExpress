@@ -23,7 +23,7 @@ const server = new ApolloServer({
 });
 
 await server.start();
-app.use("/graphql", cors<cors.CorsRequest>(), expressMiddleware(server));
+app.use("/graphql", cors(), expressMiddleware(server));
 console.log("apollo server started");
 
 app.get("/", (req, res) => {
@@ -53,9 +53,9 @@ app.use((req, res) => {
   res.status(405).send();
 });
 
-app.listen(4000, () => {
+app.listen(3000, () => {
   console.log(`
-    🚀 Server ready at: http://localhost:4000`);
+    🚀 Server ready at: http://localhost:3000`);
 });
 
 export default app;
