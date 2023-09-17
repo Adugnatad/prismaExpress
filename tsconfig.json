@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-      "module": "es2022",
+      "module": "CommonJS",
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
-      "target": "ES2022",
       "noImplicitAny": true,
       "moduleResolution": "node",
       "sourceMap": true,
@@ -20,6 +19,6 @@
     "experimentalSpecifierResolution": "node",
   },
   "include": [
-      "api/**/*"
+      "./**/*"
   ]
 }
