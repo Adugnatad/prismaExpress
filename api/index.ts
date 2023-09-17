@@ -24,7 +24,7 @@ const server = async () => {
 
   await server.start();
 
-  app.use("/graphql", cors(), expressMiddleware(server));
+  app.use("/graphql", expressMiddleware(server));
   console.log("apollo server started");
 
   app.get("/", (req, res) => {
