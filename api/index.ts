@@ -9,7 +9,6 @@ import { ApolloServer, BaseContext } from "@apollo/server";
 const apolloServer = async () => {
   const server = new ApolloServer({ typeDefs, resolvers, introspection: true });
   const { url } = await startStandaloneServer(server, {
-    context: async ({ req }) => ({ token: req.headers.token }),
     listen: { port: 4000 },
   });
   console.log(`🚀  Server ready at ${url}`);
