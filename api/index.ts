@@ -7,7 +7,7 @@ import cors from "cors";
 import { ApolloServer, BaseContext } from "@apollo/server";
 
 const apolloServer = async () => {
-  const server = new ApolloServer({ typeDefs, resolvers });
+  const server = new ApolloServer({ typeDefs, resolvers, introspection: true });
   const { url } = await startStandaloneServer(server, {
     context: async ({ req }) => ({ token: req.headers.token }),
     listen: { port: 4000 },
