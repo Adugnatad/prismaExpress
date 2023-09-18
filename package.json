@@ -6,7 +6,7 @@
   "scripts": {
     "seed": "ts-node prisma/seed.ts",
     "start": "ts-node --experimental-specifier-resolution=node ./api/index",
-    "graphql": "nodemon --exec ts-node ./graphql/index.ts",
+    "server": "node ./dist/api/index",
     "build": "tsc",
     "vercel-build": "prisma generate"
   },
