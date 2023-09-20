@@ -4,10 +4,21 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import http from "http";
 import { typeDefs, resolvers } from "../graphql/schema";
 import cors from "cors";
-import { ApolloServer, BaseContext } from "@apollo/server";
+import { ApolloServer } from "@apollo/server";
 
 const apolloServer = async () => {
-  const server = new ApolloServer({ typeDefs, resolvers, introspection: true });
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    introspection: true,
+    formatError: (formattedError, error) => {
+      // Return a different error message
+      return {
+        ...formattedError,
+        message: formattedError.message,
+      };
+    },
+  });
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
   });

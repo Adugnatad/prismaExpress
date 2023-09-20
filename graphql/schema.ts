@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { checkHash } from "../config.ts/hash";
+import { checkHash, hash } from "../config.ts/hash";
 import jwt from "jsonwebtoken";
 import { secret_key } from "../util/secrets";
+import { GraphQLError } from "graphql";
 
 const prisma = new PrismaClient();
 
@@ -23,7 +24,6 @@ export const typeDefs = `#graphql
     username: String!
     password: String!
     passwordResetToken: String
-    profileId: Int!
   }
   type Product {
     id: ID!
@@ -39,9 +39,14 @@ export const typeDefs = `#graphql
     product_id: ID!
     product: Product!
   }
+  enum Gender {
+    MALE,
+    FEMALE,
+  }
   type Mutation {
     addProduct(product: AddProductInput!): Product
     login(user: UserInfo!): String
+    signup(user: SignupInfo!): User
   }
   input AddProductInput {
     name: String!
@@ -52,6 +57,14 @@ export const typeDefs = `#graphql
   input UserInfo {
     username: String!
     password: String!
+  }
+  input SignupInfo {
+    username: String!
+    password: String!
+    FullName: String!
+    gender: Gender!
+    location: String!
+    website: String!
   }
 `;
 
@@ -79,7 +92,6 @@ export const resolvers = {
       return createdProduct;
     },
     async login(_: any, args: any) {
-      console.log(args);
       const user = await prisma.user.findUnique({
         where: {
           username: args.user.username,
@@ -94,7 +106,44 @@ export const resolvers = {
           return "Invalid credentials";
         }
       } else {
-        return "user not found";
+        throw new GraphQLError("Your custom message here...", {
+          extensions: { code: "FORBIDDEN" },
+        });
+      }
+    },
+    async signup(_: any, args: any) {
+      const hashedPassword = await hash(args.user.password);
+      if (hashedPassword) {
+        const u = await prisma.user.findUnique({
+          where: {
+            username: args.user.username,
+          },
+        });
+        if (u) {
+          return "User already exists";
+        } else {
+          const user = await prisma.user
+            .create({
+              data: {
+                username: args.user.username,
+                password: args.user.password,
+                profile: {
+                  create: {
+                    name: args.user.fullName,
+                    gender: args.user.gender,
+                    location: args.user.location,
+                    website: args.user.website,
+                  },
+                },
+              },
+            })
+            .then((user) => {
+              return user;
+            })
+            .catch((err) => {
+              return err.message;
+            });
+        }
       }
     },
   },
