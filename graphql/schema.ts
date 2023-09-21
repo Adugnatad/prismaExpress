@@ -43,10 +43,11 @@ export const typeDefs = `#graphql
     MALE,
     FEMALE,
   }
+
   type Mutation {
     addProduct(product: AddProductInput!): Product
     login(user: UserInfo!): String
-    signup(user: SignupInfo!): User
+    signup(user: SignupInfo!): String
   }
   input AddProductInput {
     name: String!
@@ -61,7 +62,7 @@ export const typeDefs = `#graphql
   input SignupInfo {
     username: String!
     password: String!
-    FullName: String!
+    fullName: String!
     gender: Gender!
     location: String!
     website: String!
@@ -103,11 +104,23 @@ export const resolvers = {
           const token = generateToken(user.username);
           return token;
         } else {
-          return "Invalid credentials";
+          throw new GraphQLError("Invalid Credentials", {
+            extensions: {
+              code: "FORBIDDEN",
+              http: {
+                status: 403,
+              },
+            },
+          });
         }
       } else {
-        throw new GraphQLError("Your custom message here...", {
-          extensions: { code: "FORBIDDEN" },
+        throw new GraphQLError("User not found", {
+          extensions: {
+            code: "FORBIDDEN",
+            http: {
+              status: 404,
+            },
+          },
         });
       }
     },
@@ -120,29 +133,32 @@ export const resolvers = {
           },
         });
         if (u) {
-          return "User already exists";
+          throw new GraphQLError("username already exists", {
+            extensions: {
+              code: "FORBIDDEN",
+              http: {
+                status: 403,
+              },
+            },
+          });
         } else {
-          const user = await prisma.user
-            .create({
-              data: {
-                username: args.user.username,
-                password: args.user.password,
-                profile: {
-                  create: {
-                    name: args.user.fullName,
-                    gender: args.user.gender,
-                    location: args.user.location,
-                    website: args.user.website,
-                  },
+          const user = await prisma.user.create({
+            data: {
+              username: args.user.username,
+              password: hashedPassword,
+              profile: {
+                create: {
+                  name: args.user.fullName,
+                  gender: args.user.gender,
+                  location: args.user.location,
+                  website: args.user.website,
                 },
               },
-            })
-            .then((user) => {
-              return user;
-            })
-            .catch((err) => {
-              return err.message;
-            });
+            },
+          });
+          if (user) {
+            return "Signup completed successfully";
+          }
         }
       }
     },

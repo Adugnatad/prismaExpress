@@ -11,10 +11,9 @@ const apolloServer = async () => {
     typeDefs,
     resolvers,
     introspection: true,
+    status400ForVariableCoercionErrors: true,
     formatError: (formattedError, error) => {
-      // Return a different error message
       return {
-        ...formattedError,
         message: formattedError.message,
       };
     },

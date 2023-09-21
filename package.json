@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "seed": "ts-node prisma/seed.ts",
-    "start": "ts-node --experimental-specifier-resolution=node ./api/index",
+    "start": "ts-node-dev --experimental-specifier-resolution=node ./api/index",
     "server": "node ./dist/api/index",
     "build": "tsc",
     "vercel-build": "prisma generate"
