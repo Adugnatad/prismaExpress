@@ -1,7 +1,4 @@
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { expressMiddleware } from "@apollo/server/express4";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import http from "http";
 import { typeDefs, resolvers } from "../graphql/schema";
 import cors from "cors";
 import { ApolloServer } from "@apollo/server";

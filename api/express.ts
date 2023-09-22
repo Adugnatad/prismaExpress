@@ -3,24 +3,19 @@ import * as userController from "../controllers/user";
 import * as productController from "../controllers/product";
 import * as orderController from "../controllers/order";
 import { verifyToken } from "../config.ts/jwtToken";
+import { CorsOptions } from "cors";
+import cors from "cors";
 
 const server = async () => {
   const app = express();
   app.use(express.json());
-  // const httpServer = http.createServer(app);
-  // const server = new ApolloServer({
-  //   typeDefs,
-  //   resolvers,
-  //   introspection: true,
-  //   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-  // });
 
-  // await server.start();
+  var corsOptions: CorsOptions = {
+    origin: "http://www.google.com",
+    optionsSuccessStatus: 200,
+  };
 
-  // app.use("/graphql", expressMiddleware(server));
-  // console.log("apollo server started");
-
-  app.get("/", (req, res) => {
+  app.get("/", cors(), (req, res) => {
     res.send("api live");
   });
 
