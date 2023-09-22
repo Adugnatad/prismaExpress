@@ -19,6 +19,10 @@ const server = async () => {
     res.send("api live");
   });
 
+  app.get("/express", (req, res) => {
+    res.send("express");
+  });
+
   app.post("/signup", userController.signup);
 
   app.post("/login", userController.login);
