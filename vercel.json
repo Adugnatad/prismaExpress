@@ -1,6 +1,6 @@
 {
     "rewrites": [
         { "source": "/", "destination": "/api" },
-        { "source": "/express/:match*", "destination": "/api/express.ts"}
+        { "source": "/(.*)", "destination": "/api/express.ts"}
     ]
 }
