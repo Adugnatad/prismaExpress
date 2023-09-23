@@ -15,7 +15,7 @@ const server = async () => {
     optionsSuccessStatus: 200,
   };
 
-  app.get("/new", cors(), (req, res) => {
+  app.get("/new", cors(corsOptions), (req, res) => {
     res.send("api live");
   });
 
