@@ -10,12 +10,22 @@ const server = async () => {
   const app = express();
   app.use(express.json());
 
-  var corsOptions: CorsOptions = {
-    origin: "http://www.google.com",
-    optionsSuccessStatus: 200,
-  };
+  // var whitelist = ["http://example1.com", "http://localhost:5173"];
 
-  app.get("/new", cors(corsOptions), (req, res) => {
+  // var corsOptions: CorsOptions = {
+  //   origin: function (origin, callback) {
+  //     if (whitelist.indexOf(origin) !== -1) {
+  //       callback(null, true);
+  //     } else {
+  //       callback(new Error("Not allowed by CORS"));
+  //     }
+  //   },
+  //   optionsSuccessStatus: 200,
+  // };
+
+  // app.use(cors(corsOptions));
+
+  app.get("/new", (req, res) => {
     res.send("api live");
   });
 
